@@ -44,12 +44,24 @@ const AddProduct = () => {
         setProduct({...product, [prop]: value});
     }
 
+
     const handleAddMember = (event: FormEvent<HTMLFormElement>) =>{
-
-        // do the Redux task 
-        // fetch the link to send the data to the server 
-
+        
         console.log(product)
+        fetch('http://localhost:5000/products', {
+            method: 'post',
+            headers: { 'content-type' : 'application/json'}, 
+            body: JSON.stringify( product )
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log(data)
+            if(data.acknowledged){
+                alert('Product Inserted Success !!')
+                // need to reset the form
+            }
+        })
+        .catch(error => console.log(error))
         event.preventDefault();
     }
 
@@ -81,7 +93,7 @@ const AddProduct = () => {
                             <input required onChange={(e)=>{onProductChange('vat', parseFloat(e.target.value))}} className='p-2 border-b-2' type='number' name='vat' placeholder="VAT in Per Cent (%)" />
                             <input required onChange={(e)=>{onProductChange('materialCostingPerUnit', parseFloat(e.target.value))}} className='p-2 border-b-2' type='number' name='materialCostingPerUnit' placeholder="Material Costing" />
                             <input className='p-2 border-b-2'  type='number' name='totalCost' placeholder='Total Cost' readOnly />
-                            <input className='p-2 border-b-2'  type='number' name='profitMargin' placeholder='Profit Margin (%)' readOnly />
+                            {/* <input className='p-2 border-b-2'  type='number' name='profitMargin' placeholder='Profit Margin (%)' readOnly /> */}
                         </fieldset>
                     </div>
 
@@ -94,7 +106,7 @@ const AddProduct = () => {
                         <input required onChange={(e)=>{onProductChange('email', e.target.value.toString())}} className='p-2 border-b-2' type='email' name='email' placeholder='Enter Email' />
                         <input required onChange={(e)=>{onProductChange('contructNumber', e.target.value.toString())}} className='p-2 border-b-2' type='text' name='contructNumber' placeholder='Contruct Number' />
                         <input required onChange={(e)=>{onProductChange('presentAddress', e.target.value.toString())}} className='p-2 border-b-2' type='text' name='presentAddress' placeholder='Present Address' />
-                        <input required onChange={(e)=>{onProductChange('productImg', e.target.value.toString())}} className='p-2 border-b-2' type='file' name='productImg' placeholder='Select Images' />
+                        <input required onChange={(e)=>{onProductChange('productImg', e.target.value.toString())}} className='p-2 border-b-2' multiple type='file' accept='image/*' name='productImg' placeholder='Select Images' />
                         <br />
                         <input type="submit" value="Add Product" className='border-2 bg-indigo-800 px-2 text-center rounded-md ml-2 text-white hover:bg-purple-500' />
                     </fieldset>
@@ -106,3 +118,6 @@ const AddProduct = () => {
 };
 
 export default AddProduct;
+
+// for images upload 
+// https://web.programming-hero.com/web-4/video/web-4-76-1-module-overview-and-image-upload-form-setup
